@@ -3,9 +3,14 @@ import Link from "next/link";
 type Props = {
     logoHref: string;
     active?: "docs" | "admin" | "none";
+    rightAddon?: React.ReactNode;
 };
 
-export default function BrandHeader({ logoHref, active = "none" }: Props) {
+export default function BrandHeader({
+    logoHref,
+    active = "none",
+    rightAddon,
+}: Props) {
     return (
         <header className="sticky top-0 z-30 border-b border-[#0e2f61] bg-[#134186] text-white shadow-md">
             <div className="page-container flex items-center justify-between gap-4 py-3">
@@ -20,7 +25,8 @@ export default function BrandHeader({ logoHref, active = "none" }: Props) {
                     />
                 </Link>
 
-                <nav className="hidden items-center gap-2 sm:flex">
+                <div className="hidden items-center gap-2 sm:flex">
+                    {rightAddon}
                     <Link
                         href="/docs"
                         className={`rounded-md px-3 py-1.5 text-sm font-semibold text-white transition ${
@@ -49,7 +55,7 @@ export default function BrandHeader({ logoHref, active = "none" }: Props) {
                     >
                         Contact Us
                     </a>
-                </nav>
+                </div>
             </div>
         </header>
     );

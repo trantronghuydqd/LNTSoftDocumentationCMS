@@ -1,6 +1,8 @@
 import { PostRecord, PostTreeNode } from "@/types/post";
+import { readPostSlug, readPostTitle } from "@/lib/post-i18n";
+import { SupportedLanguage } from "@/types/post";
 
-export function buildPostTree(posts: PostRecord[]) {
+export function buildPostTree(posts: PostRecord[], lang: SupportedLanguage) {
     const map: Record<string, PostTreeNode> = {};
     const roots: PostTreeNode[] = [];
 
@@ -22,7 +24,8 @@ export function buildPostTree(posts: PostRecord[]) {
     const sortTree = (nodes: PostTreeNode[]) => {
         nodes.sort(
             (a, b) =>
-                a.orderIndex - b.orderIndex || a.title.localeCompare(b.title),
+                a.orderIndex - b.orderIndex ||
+                readPostTitle(a, lang).localeCompare(readPostTitle(b, lang)),
         );
         nodes.forEach((node) => sortTree(node.children));
         return nodes;
@@ -31,8 +34,12 @@ export function buildPostTree(posts: PostRecord[]) {
     return sortTree(roots);
 }
 
-export function collectAncestorIds(posts: PostRecord[], slug: string) {
-    const postBySlug = posts.find((post) => post.slug === slug);
+export function collectAncestorIds(
+    posts: PostRecord[],
+    slug: string,
+    lang: SupportedLanguage,
+) {
+    const postBySlug = posts.find((post) => readPostSlug(post, lang) === slug);
     if (!postBySlug) return [];
 
     const postMap = Object.fromEntries(posts.map((post) => [post.id, post]));

@@ -2,12 +2,14 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { PostTreeNode } from "@/types/post";
+import { PostTreeNode, SupportedLanguage } from "@/types/post";
+import { readPostSlug, readPostTitle } from "@/lib/post-i18n";
 
 type Props = {
     node: PostTreeNode;
     activeSlug: string;
     ancestorIds: string[];
+    lang: SupportedLanguage;
     depth?: number;
 };
 
@@ -15,6 +17,7 @@ export default function SidebarItem({
     node,
     activeSlug,
     ancestorIds,
+    lang,
     depth = 0,
 }: Props) {
     const hasChildren = node.children.length > 0;
@@ -23,7 +26,9 @@ export default function SidebarItem({
         [ancestorIds, node.id, node.slug, activeSlug],
     );
     const [open, setOpen] = useState(shouldOpenByDefault);
-    const isActive = node.slug === activeSlug;
+    const slug = readPostSlug(node, lang);
+    const title = readPostTitle(node, lang);
+    const isActive = slug === activeSlug;
 
     return (
         <div>
@@ -45,14 +50,14 @@ export default function SidebarItem({
                 )}
 
                 <Link
-                    href={`/docs/${node.slug}`}
+                    href={`/docs/${slug}?lang=${lang}`}
                     className={`block flex-1 rounded-md px-2 py-1.5 text-sm transition ${
                         isActive
                             ? "bg-[#e9f3fd] font-semibold text-[#134186]"
                             : "text-slate-700 hover:bg-[#f3f8ff]"
                     }`}
                 >
-                    {node.title}
+                    {title}
                 </Link>
             </div>
 
@@ -64,6 +69,7 @@ export default function SidebarItem({
                             node={child}
                             activeSlug={activeSlug}
                             ancestorIds={ancestorIds}
+                            lang={lang}
                             depth={depth + 1}
                         />
                     ))}

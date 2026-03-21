@@ -11,6 +11,7 @@ import {
 import { getFirebaseAuth, isAdminEmail } from "@/lib/firebase";
 import { deletePost, getAllPosts } from "@/lib/posts";
 import { PostRecord } from "@/types/post";
+import { readPostSlug, readPostTitle } from "@/lib/post-i18n";
 
 export default function AdminPage() {
     const auth = useMemo(() => getFirebaseAuth(), []);
@@ -194,10 +195,10 @@ export default function AdminPage() {
                                     className="border-t border-slate-200"
                                 >
                                     <td className="px-4 py-3 font-medium text-slate-900">
-                                        {post.title}
+                                        {readPostTitle(post, "vi")}
                                     </td>
                                     <td className="px-4 py-3 text-slate-700">
-                                        {post.slug}
+                                        {readPostSlug(post, "vi")}
                                     </td>
                                     <td className="px-4 py-3">
                                         {post.published
@@ -222,7 +223,7 @@ export default function AdminPage() {
                                                 Xóa
                                             </button>
                                             <Link
-                                                href={`/docs/${post.slug}`}
+                                                href={`/docs/${readPostSlug(post, "vi")}?lang=vi`}
                                                 className="rounded-md border border-slate-300 px-3 py-1.5 font-medium text-slate-700 hover:bg-slate-50"
                                             >
                                                 Xem

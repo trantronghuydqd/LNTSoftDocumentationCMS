@@ -2,12 +2,15 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { getPublishedPosts } from "@/lib/posts";
 import { PostRecord } from "@/types/post";
+import { readPostSlug, readPostTitle, resolveLanguage } from "@/lib/post-i18n";
 
 export default function DocsIndexPage() {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const lang = resolveLanguage(searchParams.get("lang"));
     const [posts, setPosts] = useState<PostRecord[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -19,7 +22,9 @@ export default function DocsIndexPage() {
                 setPosts(data);
 
                 if (data.length > 0) {
-                    router.replace(`/docs/${data[0].slug}`);
+                    router.replace(
+                        `/docs/${readPostSlug(data[0], lang)}?lang=${lang}`,
+                    );
                 }
             } catch {
                 setError("Không thể tải tài liệu.");
@@ -29,7 +34,7 @@ export default function DocsIndexPage() {
         };
 
         run();
-    }, [router]);
+    }, [router, lang]);
 
     if (loading) {
         return <main className="p-8">Đang chuyển hướng...</main>;
@@ -48,10 +53,10 @@ export default function DocsIndexPage() {
                 {posts.map((post) => (
                     <li key={post.id}>
                         <Link
-                            href={`/docs/${post.slug}`}
+                            href={`/docs/${readPostSlug(post, lang)}?lang=${lang}`}
                             className="text-slate-800 underline"
                         >
-                            {post.title}
+                            {readPostTitle(post, lang)}
                         </Link>
                     </li>
                 ))}

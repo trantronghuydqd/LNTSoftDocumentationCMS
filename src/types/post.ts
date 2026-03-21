@@ -1,8 +1,15 @@
+export type SupportedLanguage = "vi" | "en";
+
+export type LocalizedField = {
+    vi: string;
+    en: string;
+};
+
 export type PostRecord = {
     id: string;
-    title: string;
-    slug: string;
-    content: string;
+    title: LocalizedField;
+    slug: LocalizedField;
+    content: LocalizedField;
     parentId: string | null;
     orderIndex: number;
     coverImage: string;
@@ -13,9 +20,9 @@ export type PostRecord = {
 };
 
 export type PostInput = {
-    title: string;
-    slug: string;
-    content: string;
+    title: LocalizedField;
+    slug: LocalizedField;
+    content: LocalizedField;
     parentId: string | null;
     orderIndex: number;
     coverImage: string;

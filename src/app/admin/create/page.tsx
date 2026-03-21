@@ -7,15 +7,20 @@ import { onAuthStateChanged } from "firebase/auth";
 import ImageUploader from "@/components/ImageUploader";
 import { getFirebaseAuth, isAdminEmail } from "@/lib/firebase";
 import { createPost, getAllPosts } from "@/lib/posts";
-import { PostRecord } from "@/types/post";
+import { LocalizedField, PostRecord, SupportedLanguage } from "@/types/post";
+import { readPostTitle } from "@/lib/post-i18n";
+import { slugify } from "@/lib/slugify";
+
+const defaultLocalized: LocalizedField = { vi: "", en: "" };
 
 export default function CreatePostPage() {
     const auth = useMemo(() => getFirebaseAuth(), []);
     const router = useRouter();
 
-    const [title, setTitle] = useState("");
-    const [slug, setSlug] = useState("");
-    const [content, setContent] = useState("");
+    const [activeLang, setActiveLang] = useState<SupportedLanguage>("vi");
+    const [title, setTitle] = useState<LocalizedField>(defaultLocalized);
+    const [slug, setSlug] = useState<LocalizedField>(defaultLocalized);
+    const [content, setContent] = useState<LocalizedField>(defaultLocalized);
     const [parentId, setParentId] = useState<string>("");
     const [orderIndex, setOrderIndex] = useState(0);
     const [coverImage, setCoverImage] = useState("");
@@ -66,9 +71,32 @@ export default function CreatePostPage() {
 
     const parentOptions = useMemo(() => posts, [posts]);
 
+    const setLocalizedField = (
+        setter: React.Dispatch<React.SetStateAction<LocalizedField>>,
+        lang: SupportedLanguage,
+        value: string,
+    ) => {
+        setter((prev) => ({ ...prev, [lang]: value }));
+    };
+
+    const generateSlug = () => {
+        const current = title[activeLang].trim();
+        if (!current) return;
+        setSlug((prev) => ({ ...prev, [activeLang]: slugify(current) }));
+    };
+
     const handleSubmit = async () => {
-        if (!title || !slug) {
-            setError("Tiêu đề và slug là bắt buộc.");
+        if (!title.vi || !slug.vi || !content.vi) {
+            setError(
+                "Nội dung tiếng Việt (tiêu đề/slug/nội dung) là bắt buộc.",
+            );
+            return;
+        }
+
+        if (published && (!title.en || !slug.en || !content.en)) {
+            setError(
+                "Khi xuất bản, cần đủ tiêu đề/slug/nội dung tiếng Anh. Có thể để bản nháp nếu chưa đủ.",
+            );
             return;
         }
 
@@ -119,19 +147,65 @@ export default function CreatePostPage() {
             </h1>
 
             <div className="space-y-4 rounded-xl border border-[#d3e3f8] bg-white p-5 shadow-sm">
+                <div className="flex gap-2">
+                    <button
+                        type="button"
+                        onClick={() => setActiveLang("vi")}
+                        className={`rounded-md px-3 py-1.5 text-sm font-semibold ${
+                            activeLang === "vi"
+                                ? "bg-[#134186] text-white"
+                                : "border border-slate-300 text-slate-700"
+                        }`}
+                    >
+                        Tiếng Việt
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setActiveLang("en")}
+                        className={`rounded-md px-3 py-1.5 text-sm font-semibold ${
+                            activeLang === "en"
+                                ? "bg-[#134186] text-white"
+                                : "border border-slate-300 text-slate-700"
+                        }`}
+                    >
+                        English
+                    </button>
+                </div>
+
                 <input
-                    placeholder="Tiêu đề"
-                    value={title}
-                    onChange={(event) => setTitle(event.target.value)}
+                    placeholder={`Tiêu đề (${activeLang.toUpperCase()})`}
+                    value={title[activeLang]}
+                    onChange={(event) =>
+                        setLocalizedField(
+                            setTitle,
+                            activeLang,
+                            event.target.value,
+                        )
+                    }
                     className="w-full rounded-md border border-slate-300 px-3 py-2"
                 />
 
-                <input
-                    placeholder="Slug, ví dụ: gioi-thieu"
-                    value={slug}
-                    onChange={(event) => setSlug(event.target.value)}
-                    className="w-full rounded-md border border-slate-300 px-3 py-2"
-                />
+                <div className="flex gap-2">
+                    <input
+                        placeholder={`Slug (${activeLang.toUpperCase()}), ví dụ: gioi-thieu`}
+                        value={slug[activeLang]}
+                        onChange={(event) =>
+                            setLocalizedField(
+                                setSlug,
+                                activeLang,
+                                event.target.value,
+                            )
+                        }
+                        className="w-full rounded-md border border-slate-300 px-3 py-2"
+                    />
+                    <button
+                        type="button"
+                        onClick={generateSlug}
+                        className="shrink-0 rounded-md border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                    >
+                        Tạo slug
+                    </button>
+                </div>
 
                 <div className="grid gap-4 md:grid-cols-2">
                     <select
@@ -142,7 +216,7 @@ export default function CreatePostPage() {
                         <option value="">Không có mục cha</option>
                         {parentOptions.map((post) => (
                             <option key={post.id} value={post.id}>
-                                {post.title}
+                                {readPostTitle(post, "vi")}
                             </option>
                         ))}
                     </select>
@@ -167,17 +241,24 @@ export default function CreatePostPage() {
 
                 <ImageUploader
                     onUploaded={(url) => {
-                        setContent(
-                            (prev) => `${prev}\n\n![hinh-anh](${url})\n`,
-                        );
+                        setContent((prev) => ({
+                            ...prev,
+                            [activeLang]: `${prev[activeLang]}\n\n![hinh-anh](${url})\n`,
+                        }));
                     }}
                 />
 
                 <textarea
                     rows={16}
-                    value={content}
-                    onChange={(event) => setContent(event.target.value)}
-                    placeholder="Nội dung Markdown"
+                    value={content[activeLang]}
+                    onChange={(event) =>
+                        setLocalizedField(
+                            setContent,
+                            activeLang,
+                            event.target.value,
+                        )
+                    }
+                    placeholder={`Nội dung Markdown (${activeLang.toUpperCase()})`}
                     className="w-full rounded-md border border-slate-300 px-3 py-2 font-mono"
                 />
 

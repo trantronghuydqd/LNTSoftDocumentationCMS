@@ -12,7 +12,7 @@ import {
     where,
 } from "firebase/firestore";
 import { getFirestoreDb } from "@/lib/firebase";
-import { PostInput, PostRecord } from "@/types/post";
+import { LocalizedField, PostInput, PostRecord } from "@/types/post";
 
 function requireDb() {
     const db = getFirestoreDb();
@@ -38,12 +38,32 @@ function toIsoString(value: unknown) {
     return undefined;
 }
 
+function toLocalizedField(value: unknown, fallbackText = ""): LocalizedField {
+    if (value && typeof value === "object") {
+        const obj = value as Record<string, unknown>;
+        return {
+            vi: String(obj.vi ?? fallbackText),
+            en: String(obj.en ?? ""),
+        };
+    }
+
+    const text = String(value ?? fallbackText);
+    return {
+        vi: text,
+        en: "",
+    };
+}
+
 function toPostRecord(id: string, data: Record<string, unknown>): PostRecord {
+    const fallbackTitle = String(data.title ?? "");
+    const fallbackSlug = String(data.slug ?? "");
+    const fallbackContent = String(data.content ?? "");
+
     return {
         id,
-        title: String(data.title ?? ""),
-        slug: String(data.slug ?? ""),
-        content: String(data.content ?? ""),
+        title: toLocalizedField(data.title, fallbackTitle),
+        slug: toLocalizedField(data.slug, fallbackSlug),
+        content: toLocalizedField(data.content, fallbackContent),
         parentId: (data.parentId as string | null) ?? null,
         orderIndex: Number(data.orderIndex ?? 0),
         coverImage: String(data.coverImage ?? ""),

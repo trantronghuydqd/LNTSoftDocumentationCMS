@@ -2,15 +2,23 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import { getPublishedPosts } from "@/lib/posts";
 import { PostRecord } from "@/types/post";
+import {
+    readPostContent,
+    readPostSlug,
+    readPostTitle,
+    resolveLanguage,
+} from "@/lib/post-i18n";
 
 export default function DocsSlugPage() {
     const params = useParams<{ slug: string }>();
+    const searchParams = useSearchParams();
     const slug = params.slug;
+    const lang = resolveLanguage(searchParams.get("lang"));
 
     const [posts, setPosts] = useState<PostRecord[]>([]);
     const [loading, setLoading] = useState(true);
@@ -33,8 +41,8 @@ export default function DocsSlugPage() {
     }, []);
 
     const activePost = useMemo(
-        () => posts.find((post) => post.slug === slug),
-        [posts, slug],
+        () => posts.find((post) => readPostSlug(post, lang) === slug),
+        [posts, slug, lang],
     );
 
     if (loading) {
@@ -52,25 +60,30 @@ export default function DocsSlugPage() {
                     <h1 className="text-2xl font-bold text-slate-900">
                         Không tìm thấy tài liệu
                     </h1>
-                    <Link href="/docs" className="text-[#134186] underline">
+                    <Link
+                        href={`/docs?lang=${lang}`}
+                        className="text-[#134186] underline"
+                    >
                         Quay về danh sách tài liệu
                     </Link>
                 </div>
             ) : (
                 <>
                     <h1 className="mb-6 text-3xl font-extrabold tracking-tight text-[#134186]">
-                        {activePost.title}
+                        {readPostTitle(activePost, lang)}
                     </h1>
                     {activePost.coverImage && (
                         <Image
                             src={activePost.coverImage}
-                            alt={activePost.title}
+                            alt={readPostTitle(activePost, lang)}
                             width={1200}
                             height={560}
                             className="mb-6 max-h-96 w-full rounded-xl object-cover"
                         />
                     )}
-                    <MarkdownRenderer content={activePost.content} />
+                    <MarkdownRenderer
+                        content={readPostContent(activePost, lang)}
+                    />
                 </>
             )}
         </section>
