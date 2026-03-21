@@ -21,13 +21,13 @@ export default function SidebarItem({
     depth = 0,
 }: Props) {
     const hasChildren = node.children.length > 0;
-    const shouldOpenByDefault = useMemo(
-        () => ancestorIds.includes(node.id) || node.slug === activeSlug,
-        [ancestorIds, node.id, node.slug, activeSlug],
-    );
-    const [open, setOpen] = useState(shouldOpenByDefault);
     const slug = readPostSlug(node, lang);
     const title = readPostTitle(node, lang);
+    const shouldOpenByDefault = useMemo(
+        () => ancestorIds.includes(node.id) || slug === activeSlug,
+        [ancestorIds, node.id, slug, activeSlug],
+    );
+    const [open, setOpen] = useState(shouldOpenByDefault);
     const isActive = slug === activeSlug;
 
     return (
