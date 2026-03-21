@@ -17,13 +17,10 @@ export default function Home() {
                             LNTSoft Documentation Hub
                         </p>
                         <h1 className="mb-4 text-4xl font-black leading-tight tracking-tight text-[#134186] md:text-5xl">
-                            Cổng tài liệu nội bộ đồng bộ với hệ sinh thái
-                            LNTSoft
+                            LNTSoft Documentation
                         </h1>
                         <p className="max-w-2xl text-lg leading-relaxed text-slate-700">
-                            Nền tảng tài liệu giúp đội ngũ tra cứu kiến thức
-                            nhanh, quản trị nội dung tập trung và mở rộng theo
-                            cấu trúc cây cho nhiều nhóm giải pháp doanh nghiệp.
+                            Management Documentation for LNTSoft
                         </p>
 
                         <div className="mt-8 flex flex-wrap gap-3">
@@ -47,7 +44,7 @@ export default function Home() {
                             Có gì trong hệ thống docs
                         </h2>
                         <ul className="space-y-3 text-slate-700">
-                            <li>- Sidebar đa cấp, mở rộng theo parent-child</li>
+                            <li>- Sidebar đa cấp</li>
                             <li>
                                 - Soạn nội dung Markdown và render tối ưu đọc
                             </li>
@@ -58,10 +55,7 @@ export default function Home() {
                                 - Upload ảnh lên Firebase Storage và chèn trực
                                 tiếp
                             </li>
-                            <li>
-                                - Dễ tích hợp vào lộ trình số hóa tài liệu công
-                                ty
-                            </li>
+                            <li>- Số hóa tài liệu công ty</li>
                         </ul>
                     </div>
                 </section>
