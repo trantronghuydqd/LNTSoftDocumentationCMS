@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
@@ -72,13 +71,13 @@ export default function DocsSlugPage() {
                     <h1 className="mb-6 text-3xl font-extrabold tracking-tight text-[#134186]">
                         {readPostTitle(activePost, lang)}
                     </h1>
-                    {activePost.coverImage && (
-                        <Image
-                            src={activePost.coverImage}
+                    {!!activePost.coverImage?.trim() && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                            src={activePost.coverImage.trim()}
                             alt={readPostTitle(activePost, lang)}
-                            width={1200}
-                            height={560}
                             className="mb-6 max-h-96 w-full rounded-xl object-cover"
+                            loading="lazy"
                         />
                     )}
                     <MarkdownRenderer

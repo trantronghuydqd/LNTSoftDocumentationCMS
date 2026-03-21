@@ -239,15 +239,6 @@ export default function CreatePostPage() {
                     className="w-full rounded-md border border-slate-300 px-3 py-2"
                 />
 
-                <ImageUploader
-                    onUploaded={(url) => {
-                        setContent((prev) => ({
-                            ...prev,
-                            [activeLang]: `${prev[activeLang]}\n\n![hinh-anh](${url})\n`,
-                        }));
-                    }}
-                />
-
                 <textarea
                     rows={16}
                     value={content[activeLang]}
@@ -261,6 +252,27 @@ export default function CreatePostPage() {
                     placeholder={`Nội dung Markdown (${activeLang.toUpperCase()})`}
                     className="w-full rounded-md border border-slate-300 px-3 py-2 font-mono"
                 />
+
+                <div className="space-y-2">
+                    <p className="text-sm font-medium text-slate-700">
+                        Chèn ảnh vào nội dung bài viết
+                    </p>
+                    <ImageUploader
+                        postSlug={
+                            slug[activeLang] ||
+                            title[activeLang] ||
+                            slug.vi ||
+                            title.vi ||
+                            "tai-lieu"
+                        }
+                        onUploaded={(url) => {
+                            setContent((prev) => ({
+                                ...prev,
+                                [activeLang]: `${prev[activeLang]}\n\n![hinh-anh](${url})\n`,
+                            }));
+                        }}
+                    />
+                </div>
 
                 <label className="flex items-center gap-2 text-sm text-slate-700">
                     <input
