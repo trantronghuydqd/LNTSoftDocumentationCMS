@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Company Documentation CMS
 
-## Getting Started
+CMS tài liệu nội bộ xây bằng Next.js App Router + Firebase.
 
-First, run the development server:
+## Tính năng chính
+
+- Quản trị bài viết tài liệu: tạo, sửa, xóa
+- Soạn nội dung bằng Markdown
+- Render Markdown cho trang public
+- Sidebar dạng cây nhiều cấp (dựa trên `parentId`)
+- Đăng nhập bằng Firebase Auth, chỉ admin mới vào được khu quản trị
+- Upload ảnh lên Firebase Storage rồi chèn vào Markdown
+
+## Cấu trúc route
+
+- `/` : Landing page
+- `/docs` : Tự điều hướng tới bài tài liệu đầu tiên
+- `/docs/[slug]` : Xem tài liệu public
+- `/admin` : Đăng nhập và dashboard quản trị
+- `/admin/create` : Tạo bài viết
+- `/admin/edit/[id]` : Sửa bài viết
+
+## Cài đặt
+
+1. Cài dependencies:
+
+```bash
+npm install
+```
+
+2. Tạo file `.env.local` từ `.env.example` và điền cấu hình Firebase:
+
+```bash
+cp .env.example .env.local
+```
+
+3. Chạy dự án:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Mở `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Biến môi trường
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `NEXT_PUBLIC_FIREBASE_API_KEY`
+- `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`
+- `NEXT_PUBLIC_FIREBASE_PROJECT_ID`
+- `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`
+- `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID`
+- `NEXT_PUBLIC_FIREBASE_APP_ID`
+- `NEXT_PUBLIC_ADMIN_EMAILS`: danh sách email admin, cách nhau bởi dấu phẩy
 
-## Learn More
+## Firestore collection
 
-To learn more about Next.js, take a look at the following resources:
+Collection: `posts`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Mỗi document có schema:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `title: string`
+- `slug: string`
+- `content: string`
+- `parentId: string | null`
+- `orderIndex: number`
+- `coverImage: string`
+- `published: boolean`
+- `authorId: string`
+- `createdAt: timestamp`
+- `updatedAt: timestamp`
 
-## Deploy on Vercel
+## Gợi ý bảo mật Firebase
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Cấu hình Firestore Rules để chỉ admin được ghi dữ liệu
+- Cấu hình Storage Rules để chỉ admin được upload ảnh
+- Không dựa hoàn toàn vào chặn UI phía client
