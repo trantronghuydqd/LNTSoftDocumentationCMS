@@ -45,16 +45,9 @@ export default function Home() {
                         </h2>
                         <ul className="space-y-3 text-slate-700">
                             <li>- Sidebar đa cấp</li>
-                            <li>
-                                - Soạn nội dung Markdown và render tối ưu đọc
-                            </li>
-                            <li>
-                                - Quản lý bài viết tạo/sửa/xóa theo quyền admin
-                            </li>
-                            <li>
-                                - Upload ảnh lên Firebase Storage và chèn trực
-                                tiếp
-                            </li>
+                            <li>- Soạn nội dung Markdown</li>
+                            <li>- Quản lý bài viết theo quyền admin</li>
+                            <li>- Upload ảnh lên Cloudinary</li>
                             <li>- Số hóa tài liệu công ty</li>
                         </ul>
                     </div>
