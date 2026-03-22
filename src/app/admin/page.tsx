@@ -98,7 +98,7 @@ export default function AdminPage() {
         return (
             <main className="mx-auto w-full max-w-md p-8">
                 <h1 className="mb-4 text-2xl font-bold text-[#134186]">
-                    Đăng nhập quản trị
+                    Đăng nhập quản lý
                 </h1>
                 <div className="space-y-3 rounded-xl border border-[#d3e3f8] bg-white p-4 shadow-sm">
                     <input
