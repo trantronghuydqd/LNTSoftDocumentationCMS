@@ -10,11 +10,7 @@ import { PostRecord } from "@/types/post";
 import { usePathname, useSearchParams } from "next/navigation";
 import { readPostSlug, resolveLanguage } from "@/lib/post-i18n";
 
-function DocsLayoutContent({
-    children,
-}: {
-    children: React.ReactNode;
-}) {
+function DocsLayoutContent({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const slug = pathname.split("/").pop() || "";
