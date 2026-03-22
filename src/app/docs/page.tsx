@@ -1,13 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getPublishedPosts } from "@/lib/posts";
 import { PostRecord } from "@/types/post";
 import { readPostSlug, readPostTitle, resolveLanguage } from "@/lib/post-i18n";
 
-export default function DocsIndexPage() {
+function DocsIndexPageContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const lang = resolveLanguage(searchParams.get("lang"));
@@ -62,5 +62,13 @@ export default function DocsIndexPage() {
                 ))}
             </ul>
         </main>
+    );
+}
+
+export default function DocsIndexPage() {
+    return (
+        <Suspense fallback={<main className="p-8">Đang chuyển hướng...</main>}>
+            <DocsIndexPageContent />
+        </Suspense>
     );
 }

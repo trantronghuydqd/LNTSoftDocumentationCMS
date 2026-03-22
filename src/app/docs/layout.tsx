@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Sidebar from "@/components/Sidebar";
 import BrandHeader from "@/components/BrandHeader";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
@@ -10,7 +10,7 @@ import { PostRecord } from "@/types/post";
 import { usePathname, useSearchParams } from "next/navigation";
 import { readPostSlug, resolveLanguage } from "@/lib/post-i18n";
 
-export default function DocsLayout({
+function DocsLayoutContent({
     children,
 }: {
     children: React.ReactNode;
@@ -75,5 +75,17 @@ export default function DocsLayout({
                 {children}
             </div>
         </>
+    );
+}
+
+export default function DocsLayout({
+    children,
+}: {
+    children: React.ReactNode;
+}) {
+    return (
+        <Suspense fallback={<main className="p-8">Đang tải tài liệu...</main>}>
+            <DocsLayoutContent>{children}</DocsLayoutContent>
+        </Suspense>
     );
 }

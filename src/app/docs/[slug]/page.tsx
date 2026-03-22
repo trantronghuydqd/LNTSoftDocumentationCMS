@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import { getPublishedPosts } from "@/lib/posts";
 import { PostRecord } from "@/types/post";
@@ -13,7 +13,7 @@ import {
     resolveLanguage,
 } from "@/lib/post-i18n";
 
-export default function DocsSlugPage() {
+function DocsSlugPageContent() {
     const params = useParams<{ slug: string }>();
     const searchParams = useSearchParams();
     const slug = params.slug;
@@ -86,5 +86,13 @@ export default function DocsSlugPage() {
                 </>
             )}
         </section>
+    );
+}
+
+export default function DocsSlugPage() {
+    return (
+        <Suspense fallback={<div className="p-8">Đang tải tài liệu...</div>}>
+            <DocsSlugPageContent />
+        </Suspense>
     );
 }
