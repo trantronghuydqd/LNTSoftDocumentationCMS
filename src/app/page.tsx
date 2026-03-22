@@ -34,7 +34,7 @@ export default function Home() {
                                 href="/admin"
                                 className="rounded-xl border border-[#9bbde7] bg-white px-5 py-3 font-semibold text-[#134186] transition hover:-translate-y-0.5 hover:bg-[#f4f9ff]"
                             >
-                                Quản trị nội dung
+                                Quản lý bài viết
                             </Link>
                         </div>
                     </div>
@@ -49,7 +49,7 @@ export default function Home() {
                                 - Soạn nội dung Markdown và render tối ưu đọc
                             </li>
                             <li>
-                                - Quản trị bài viết tạo/sửa/xóa theo quyền admin
+                                - Quản lý bài viết tạo/sửa/xóa theo quyền admin
                             </li>
                             <li>
                                 - Upload ảnh lên Firebase Storage và chèn trực

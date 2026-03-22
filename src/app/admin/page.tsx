@@ -154,7 +154,7 @@ export default function AdminPage() {
         <main className="mx-auto w-full max-w-5xl p-8">
             <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
                 <h1 className="text-3xl font-extrabold text-[#134186]">
-                    Quản trị tài liệu
+                    Quản lý bài viết
                 </h1>
                 <div className="flex gap-2">
                     <Link
