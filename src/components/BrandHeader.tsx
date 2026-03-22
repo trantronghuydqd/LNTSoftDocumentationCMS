@@ -26,7 +26,9 @@ export default function BrandHeader({
                 </Link>
 
                 <div className="ml-auto flex items-center gap-2">
-                    {rightAddon ? <div className="shrink-0">{rightAddon}</div> : null}
+                    {rightAddon ? (
+                        <div className="shrink-0">{rightAddon}</div>
+                    ) : null}
 
                     <nav className="hidden items-center gap-2 sm:flex">
                         <Link
